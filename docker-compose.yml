@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app  # Syncs local changes during development
+      - /app/node_modules  # Prevents syncing of node_modules
+    environment:
+      - NODE_ENV=development  # Use production when deploying
+    command: npm run dev  # Use npm start for production
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./api:/app
+    environment:
+      - FLASK_ENV=development
+    command: python main.py
+    networks:
+      - app-network
+
+networks:
+  app-network:
